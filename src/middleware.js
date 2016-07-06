@@ -1,6 +1,6 @@
 // @flow
 import { isFSA } from 'flux-standard-action';
-import { changeAsyncState } from './actions';
+import changeAsyncState from './changeAsyncState';
 
 function isPromise(val) {
   return val && typeof val.then === 'function';
@@ -9,7 +9,7 @@ function isPromise(val) {
 // taken from redux-promise:
 // https://github.com/acdlite/redux-promise/blob/master/src/index.js
 // and modified
-const promiseMiddleware =
+export const promiseMiddleware =
   ({ dispatch }) => next => action => {
     const { type, meta } = action;
     const actionKey = meta ? meta.actionKey : undefined;
@@ -29,7 +29,7 @@ const promiseMiddleware =
           return dispatch({ ...action, payload: result });
         },
         error => {
-          dispatch(changeAsyncState(type, 'failure', actionKey));
+          dispatch(changeAsyncState(type, 'error', actionKey));
           return dispatch({ ...action, payload: error, error: true });
         }
       );

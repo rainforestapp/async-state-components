@@ -3,7 +3,7 @@ import { Map as map } from 'immutable';
 import { handleActions } from 'redux-actions';
 import { ASYNC_STATE_CHANGE } from './constants';
 
-export default handleActions({
+export const promiseState = handleActions({
   [ASYNC_STATE_CHANGE](state, { payload }) {
     let actionName = payload.actionName;
     if (payload.actionKey !== undefined) {
@@ -12,3 +12,5 @@ export default handleActions({
     return state.set(actionName, payload.state);
   },
 }, map());
+
+export default promiseState;

@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';
-import * as actions from './actions';
+import changeAsync from './changeAsyncState';
 import lifecycle from 'recompose/lifecycle';
 import withState from 'recompose/withState';
 import withHandlers from 'recompose/withHandlers';
@@ -34,7 +34,7 @@ export const mergeProps = (
 
 export const connectToState = Comp => (connect(
   mapStateToProps,
-  actions,
+  { changeAsyncState: changeAsync },
   mergeProps
 )(Comp));
 
@@ -71,7 +71,7 @@ export const transition = (transitions: TransitionObject, delay = 4000): hoc => 
       timeoutId,
       setTimeoutId,
     }) => (asyncState: string) => {
-      if (asyncState === 'failure' || asyncState === 'success') {
+      if (asyncState === 'error' || asyncState === 'success') {
         if (timeoutId !== undefined) {
           clearTimeout(timeoutId);
         }

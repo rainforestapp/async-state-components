@@ -1,1 +1,3 @@
-# Async state components
+# react-redux-promise
+
+

@@ -6,8 +6,9 @@ import * as actions from './actions';
 import lifecycle from 'recompose/lifecycle';
 import withState from 'recompose/withState';
 import withHandlers from 'recompose/withHandlers';
+import omit from 'lodash/omit';
 
-const mapStateToProps = ({ promiseState }) => ({ promiseState });
+export const mapStateToProps = ({ promiseState }) => ({ promiseState });
 
 export const mergeProps = (
   { promiseState },
@@ -22,18 +23,42 @@ export const mergeProps = (
     asyncState = promiseState.get(actionName);
   }
 
-  return { ...ownProps, ...asyncActions, asyncState, actionName, actionKey };
+  return {
+    ...ownProps,
+    ...asyncActions,
+    asyncState,
+    actionName,
+    actionKey,
+  };
 };
 
-export const connectToState = connect(
+export const connectToState = Comp => (connect(
   mapStateToProps,
   actions,
   mergeProps
-);
+)(Comp));
 
 const identity = (Comp) => (props) => <Comp {...props} />;
 
-const transition = (transitions, delay = 4000) => compose(
+type TransitionCompProps = {
+  setTimeoutId: (id: number) => void;
+  timeoutId: number;
+  resetButtonState: () => void;
+  actionName: string;
+  actionKey: string|number;
+  changeAsyncState: (actionName: string, state: string, actionKey: ?string) => void;
+  asyncState: string;
+};
+
+type hoc = (comp: ReactClass) => (props: Object) => ReactClass;
+
+type TransitionObject = {
+  success?: hoc;
+  pending?: hoc;
+  error?: hoc;
+};
+
+export const transition = (transitions: TransitionObject, delay = 4000): hoc => compose(
   connectToState,
 
   withState('timeoutId', 'setTimeoutId', undefined),
@@ -45,7 +70,7 @@ const transition = (transitions, delay = 4000) => compose(
       actionKey,
       timeoutId,
       setTimeoutId,
-    }) => (asyncState) => {
+    }) => (asyncState: string) => {
       if (asyncState === 'failure' || asyncState === 'success') {
         if (timeoutId !== undefined) {
           clearTimeout(timeoutId);
@@ -82,11 +107,21 @@ const transition = (transitions, delay = 4000) => compose(
     },
   }),
 
-  (Comp) => (props) => {
+  (Comp) => (props: TransitionCompProps) => {
+    const internalProps = [
+      'setTimeoutId',
+      'timeoutId',
+      'resetButtonState',
+      'actionName',
+      'actionKey',
+      'changeAsyncState',
+      'asyncState',
+    ];
+
     const { asyncState } = props;
     let render = identity;
     if (transitions[asyncState]) render = transitions[asyncState];
-    return render(Comp)(props);
+    return render(Comp)(omit(props, internalProps));
   }
 );
 

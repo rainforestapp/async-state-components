@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
 import transition from '../src/transition';
 import CheckIcon from 'react-icons/lib/fa/check';
 import * as actions from './actions';
@@ -13,25 +12,27 @@ const colors = {
   error: 'red',
 };
 
+const Button = (props) => <button {...props} />;
+
 const AsyncButton = transition({
   success: (Comp) => (props) => (
-    <Comp {...props} style={{ color: 'white' }} backgroundColor={colors.success}>
+    <Comp {...props} style={{ color: 'white', background: colors.success }}>
       <CheckIcon /> Yea, it saved!
     </Comp>
   ),
 
   pending: (Comp) => (props) => (
-    <Comp {...props} backgroundColor={colors.default}>
+    <Comp {...props} style={{ background: colors.default }}>
      Hold on, it's saving.
     </Comp>
   ),
 
   error: (Comp) => (props) => (
-    <Comp {...props} backgroundColor={colors.error}>
+    <Comp {...props} style={{ background: colors.error }}>
       Sorry there's an error
     </Comp>
   ),
-}, 4000)(RaisedButton);
+}, 4000)(Button);
 
 type DemoProps = {
   saveSettings: () => void;
@@ -44,7 +45,6 @@ const Demo = ({ saveSettings }: DemoProps) => (
       style={{ padding: '0 1em' }}
       actionName={SAVE_SETTINGS}
       onClick={saveSettings}
-      backgroundColor={colors.default}
     >
       Save Me!
     </AsyncButton>

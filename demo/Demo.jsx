@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import transition from '../src/transition';
+import { transition } from '../src';
 import CheckIcon from 'react-icons/lib/fa/check';
 import * as actions from './actions';
 import { connect } from 'react-redux';

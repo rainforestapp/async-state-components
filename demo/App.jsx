@@ -4,13 +4,12 @@ import pkgInfo from '../package.json';
 import Demo from './Demo.jsx';
 import { Provider } from 'react-redux';
 import { compose, createStore, applyMiddleware, combineReducers } from 'redux';
-import { promiseMiddleware, promiseState } from '../src/middleware';
-import promiseState from '../src/reducer';
+import { middleware, reducer } from '../src';
 
 const store = createStore(
-  combineReducers({ promiseState }),
+  combineReducers({ promiseState: reducer }),
   compose(applyMiddleware(
-    promiseMiddleware
+    middleware
   ))
 );
 

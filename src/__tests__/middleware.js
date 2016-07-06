@@ -12,7 +12,7 @@ const changeAsyncStateResponse = { ok: true };
 // for more info go here https://github.com/acdlite/flux-standard-action
 describe('promise middleware', () => {
   beforeEach(() => {
-    spyOn(actions, 'default').and.returnValue(changeAsyncStateResponse);
+    spyOn(actions, 'changeAsyncState').and.returnValue(changeAsyncStateResponse);
     dispatch = jasmine.createSpy('dispatch');
     next = jasmine.createSpy('next');
   });
@@ -80,16 +80,16 @@ describe('promise middleware', () => {
       });
 
       it('dispatches changeAsyncState with the "pending" state & actionKey', () => {
-        expect(actions.default.calls.count()).toBe(1);
-        expect(actions.default).toHaveBeenCalledWith(actionType, 'pending', actionKey);
+        expect(actions.changeAsyncState.calls.count()).toBe(1);
+        expect(actions.changeAsyncState).toHaveBeenCalledWith(actionType, 'pending', actionKey);
       });
 
       describe('when the promise resolves without error', () => {
         it('dispatches changeAsyncState with the "success" state & actionKey', () => {
           jest.runAllTicks();
           jest.runOnlyPendingTimers();
-          expect(actions.default.calls.count()).toBe(2);
-          expect(actions.default).toHaveBeenCalledWith(actionType, 'success', actionKey);
+          expect(actions.changeAsyncState.calls.count()).toBe(2);
+          expect(actions.changeAsyncState).toHaveBeenCalledWith(actionType, 'success', actionKey);
           expect(dispatch).toHaveBeenCalledWith(changeAsyncStateResponse);
         });
       });
@@ -109,8 +109,8 @@ describe('promise middleware', () => {
       });
 
       it('dispatches changeAsyncState with the "error" state & actionKey', () => {
-        expect(actions.default.calls.count()).toBe(2);
-        expect(actions.default).toHaveBeenCalledWith(actionType, 'error', actionKey);
+        expect(actions.changeAsyncState.calls.count()).toBe(2);
+        expect(actions.changeAsyncState).toHaveBeenCalledWith(actionType, 'error', actionKey);
         expect(dispatch).toHaveBeenCalledWith(changeAsyncStateResponse);
       });
 

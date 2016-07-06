@@ -1,4 +1,4 @@
-import changeAsyncState from './changeAsyncState';
+import { changeAsyncState } from './changeAsyncState';
 import { ASYNC_STATE_CHANGE } from './constants';
 import middleware from './middleware';
 import transition from './transition';

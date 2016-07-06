@@ -1,6 +1,6 @@
 // @flow
 import { isFSA } from 'flux-standard-action';
-import changeAsyncState from './changeAsyncState';
+import { changeAsyncState } from './changeAsyncState';
 
 function isPromise(val) {
   return val && typeof val.then === 'function';

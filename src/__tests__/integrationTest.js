@@ -1,19 +1,19 @@
 // @flow
-jest.dontMock('../changeAsyncState');
-jest.dontMock('../transition');
-jest.dontMock('../middleware');
-jest.dontMock('../constants');
-jest.dontMock('../reducer');
+jest.unmock('../changeAsyncState');
+jest.unmock('../transition');
+jest.unmock('../middleware');
+jest.unmock('../constants');
+jest.unmock('../reducer');
 
-const React = require('react');
-const { mount } = require('enzyme');
-const { promiseMiddleware } = require('../middleware');
-const { transition } = require('../transition');
-const actions = require('../changeAsyncState');
-const { createAction } = require('redux-actions');
-const { promiseState } = require('../reducer');
-const { Provider } = require('react-redux');
-const { compose, createStore, applyMiddleware, combineReducers } = require('redux');
+import React from 'react';
+import { mount } from 'enzyme';
+import { promiseMiddleware } from '../middleware';
+import { transition } from '../transition';
+import * as actions from '../changeAsyncState';
+import { createAction } from 'redux-actions';
+import { promiseState } from '../reducer';
+import { Provider } from 'react-redux';
+import { compose, createStore, applyMiddleware, combineReducers } from 'redux';
 
 const ACTION_NAME = 'ACTION_NAME';
 const actionKey = 123;
@@ -56,7 +56,7 @@ const transitions = {
 describe('transition hoc', () => {
   beforeEach(() => {
     AsyncComponent = transition(transitions, 4000)(DefaultComponent);
-    spyOn(actions, 'default').and.callThrough();
+    spyOn(actions, 'changeAsyncState').and.callThrough();
 
     store = createStore(
       combineReducers({ promiseState }),
@@ -88,7 +88,7 @@ describe('transition hoc', () => {
 
   it('sets async state to pending and passes right key when promise is started', () => {
     comp.find(AsyncComponent).simulate('click');
-    expect(actions.default).toHaveBeenCalledWith(ACTION_NAME, 'pending', actionKey);
+    expect(actions.changeAsyncState).toHaveBeenCalledWith(ACTION_NAME, 'pending', actionKey);
   });
 
   describe('when promise gets resolved successfully', () => {
@@ -102,24 +102,23 @@ describe('transition hoc', () => {
     });
 
     it('first sets async state to pending and renders the pending component', () => {
-      expect(actions.default.calls.count()).toBe(1);
-      expect(actions.default).toHaveBeenCalledWith(ACTION_NAME, 'pending', actionKey);
-      expect(actions.default).not.toHaveBeenCalledWith(ACTION_NAME, 'success', actionKey);
+      expect(actions.changeAsyncState.calls.count()).toBe(1);
+      expect(actions.changeAsyncState).toHaveBeenCalledWith(ACTION_NAME, 'pending', actionKey);
+      expect(actions.changeAsyncState).not.toHaveBeenCalledWith(ACTION_NAME, 'success', actionKey);
       expect(comp.find(PendingComp).length).toBe(1);
     });
 
     it('then sets async state to success and renders the success component', () => {
       jest.runAllTicks();
-      expect(actions.default.calls.count()).toBe(2);
-      expect(actions.default).toHaveBeenCalledWith(ACTION_NAME, 'success', actionKey);
+      expect(actions.changeAsyncState.calls.count()).toBe(2);
+      expect(actions.changeAsyncState).toHaveBeenCalledWith(ACTION_NAME, 'success', actionKey);
       expect(comp.find(SuccessComp).length).toBe(1);
     });
 
     it('finally sets async state to default and renders the default component', () => {
       jest.runAllTimers();
-      //expect(actions.default).toHaveBeenCalledWith(ACTION_NAME, 'default', actionKey);
-      //console.log('aaaaaactions', actions.default.calls.allArgs());
-      //expect(actions.default.calls.count()).toBe(3);
+      expect(actions.changeAsyncState).toHaveBeenCalledWith(ACTION_NAME, 'default', actionKey);
+      expect(actions.changeAsyncState.calls.count()).toBe(3);
       expect(comp.find(DefaultComponent).length).toBe(1);
     });
   });
@@ -139,23 +138,23 @@ describe('transition hoc', () => {
     });
 
     it('first sets async state to pending and renders the pending component', () => {
-      expect(actions.default.calls.count()).toBe(1);
-      expect(actions.default).toHaveBeenCalledWith(ACTION_NAME, 'pending', actionKey);
-      expect(actions.default).not.toHaveBeenCalledWith(ACTION_NAME, 'success', actionKey);
+      expect(actions.changeAsyncState.calls.count()).toBe(1);
+      expect(actions.changeAsyncState).toHaveBeenCalledWith(ACTION_NAME, 'pending', actionKey);
+      expect(actions.changeAsyncState).not.toHaveBeenCalledWith(ACTION_NAME, 'success', actionKey);
       expect(comp.find(PendingComp).length).toBe(1);
     });
 
     it('then sets async state to error and renders the error component', () => {
       jest.runAllTicks();
-      expect(actions.default.calls.count()).toBe(2);
-      expect(actions.default).toHaveBeenCalledWith(ACTION_NAME, 'error', actionKey);
+      expect(actions.changeAsyncState.calls.count()).toBe(2);
+      expect(actions.changeAsyncState).toHaveBeenCalledWith(ACTION_NAME, 'error', actionKey);
       expect(comp.find(ErrorComp).length).toBe(1);
     });
 
     it('finally sets async state to default and renders the default component', () => {
       jest.runAllTimers();
-      expect(actions.default).toHaveBeenCalledWith(ACTION_NAME, 'default', actionKey);
-      expect(actions.default.calls.count()).toBe(3);
+      expect(actions.changeAsyncState).toHaveBeenCalledWith(ACTION_NAME, 'default', actionKey);
+      expect(actions.changeAsyncState.calls.count()).toBe(3);
       expect(comp.find(DefaultComponent).length).toBe(1);
     });
   });
@@ -172,7 +171,7 @@ describe('transition hoc', () => {
 
     it('calls changeAsyncState with the right arguments', () => {
       comp.find(AsyncComponent).simulate('click');
-      expect(actions.default).toHaveBeenCalledWith(ACTION_NAME, 'pending', undefined);
+      expect(actions.changeAsyncState).toHaveBeenCalledWith(ACTION_NAME, 'pending', undefined);
     });
   });
 });

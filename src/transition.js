@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';
-import changeAsync from './changeAsyncState';
+import * as actions from './changeAsyncState';
 import lifecycle from 'recompose/lifecycle';
 import withState from 'recompose/withState';
 import withHandlers from 'recompose/withHandlers';
@@ -34,7 +34,7 @@ export const mergeProps = (
 
 export const connectToState = Comp => (connect(
   mapStateToProps,
-  { changeAsyncState: changeAsync },
+  actions,
   mergeProps
 )(Comp));
 
